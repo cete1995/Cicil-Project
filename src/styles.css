@@ -80,3 +80,8 @@ h1, h2 { font-family: 'Manrope', sans-serif; margin: 0; }
 .pricing-options button.selected { border-color: #168f82; background: #e2f5f1; box-shadow: inset 0 0 0 1px #168f82; }
 .activity-days button.active { background: #168f82; border-color: #168f82; }
 .session-formula { background: #ecf8f5; border-color: #d4eee8; }
+.result-main > div { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.result-main > div em { color: #173f3a; background: #55d5c5; border-radius: 12px; padding: 4px 7px; font-size: 8px; font-style: normal; font-weight: 800; letter-spacing: .7px; }
+.result-total { border-top: 4px solid #8ce2d7; }
+.result-total > em { display: inline-block; color: #dcf8f4; background: #176f65; border-radius: 10px; padding: 3px 7px; margin-bottom: 9px; font-size: 7px; font-style: normal; font-weight: 800; letter-spacing: .8px; }
+.result-total > span { font-weight: 700; }

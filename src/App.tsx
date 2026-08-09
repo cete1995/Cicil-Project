@@ -266,6 +266,7 @@ function ExtracurricularCalculator() {
   const billedPerStudent = Math.ceil((basePerStudent * (1 + markup / 100)) / 1000) * 1000
   const totalParentBilling = billedPerStudent * students
   const marginAmount = totalParentBilling - vendorTotal
+  const marginPerStudent = students > 0 ? marginAmount / students : 0
 
   const money = (value: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(value)
   const number = (setter: (value: number) => void) => (event: React.ChangeEvent<HTMLInputElement>) => setter(Math.max(0, Number(event.target.value)))
@@ -318,15 +319,15 @@ function ExtracurricularCalculator() {
 
       <aside className="result-card">
         <div className="result-top"><span>ESTIMASI TAGIHAN</span><small>{activity || 'Nama kegiatan'} · {vendor || 'Nama vendor'}</small></div>
-        <div className="result-main"><span>Tagihan tahunan / murid</span><strong>{money(billedPerStudent)}</strong><small>atau {money(billedPerStudent / 12)} per bulan kalender</small></div>
+        <div className="result-main"><div><span>Tagihan tahunan per anak</span><em>PER ANAK</em></div><strong>{money(billedPerStudent)}</strong><small>Nominal invoice untuk setiap orang tua · setara {money(billedPerStudent / 12)} per bulan</small></div>
         <div className="result-breakdown">
           <div><span>Total sesi tahunan</span><b>{annualSessions} sesi</b></div>
           <div><span>Total bayar ke vendor</span><b>{money(vendorTotal)}</b></div>
-          <div><span>Biaya dasar / murid</span><b>{money(basePerStudent)}</b></div>
-          <div><span>Markup ({markup}%)</span><b>{money(marginAmount)}</b></div>
+          <div><span>Biaya dasar per anak</span><b>{money(basePerStudent)}</b></div>
+          <div><span>Markup per anak ({markup}%)</span><b>{money(marginPerStudent)}</b></div>
         </div>
-        <div className="result-total"><span>Total tagihan ke orang tua</span><strong>{money(totalParentBilling)}</strong><small>{students} murid × {money(billedPerStudent)}</small></div>
-        <div className="result-note"><CheckCircle2 size={16}/><p>Nilai per murid dibulatkan ke atas ke ribuan rupiah terdekat.</p></div>
+        <div className="result-total"><em>AGREGAT KESELURUHAN</em><span>Total dari seluruh orang tua</span><strong>{money(totalParentBilling)}</strong><small>{students} anak × {money(billedPerStudent)} per anak</small></div>
+        <div className="result-note"><CheckCircle2 size={16}/><p>Gunakan angka “per anak” untuk invoice. Total keseluruhan hanya proyeksi gabungan seluruh orang tua.</p></div>
       </aside>
     </div>
   </section>
