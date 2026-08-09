@@ -228,6 +228,9 @@ function ExtracurricularCalculator() {
   const [startDate, setStartDate] = useState('2026-01-01')
   const [endDate, setEndDate] = useState('2026-12-31')
   const [selectedDays, setSelectedDays] = useState<number[]>([5])
+  const [sessionMode, setSessionMode] = useState<'calendar' | 'manual'>('calendar')
+  const [manualSessions, setManualSessions] = useState(40)
+  const [manualActiveMonths, setManualActiveMonths] = useState(10)
   const [markup, setMarkup] = useState(15)
 
   const calendarEvents: CalendarEvent[] = (() => {
@@ -251,12 +254,14 @@ function ExtracurricularCalculator() {
     }
     return { possible, effective, blocked }
   }, [startDate, endDate, selectedDays, calendarEvents])
-  const annualSessions = extracurricularDates.effective.length
-  const activeMonths = (() => {
+  const calendarSessions = extracurricularDates.effective.length
+  const calendarActiveMonths = (() => {
     const from = new Date(`${startDate}T12:00:00`), until = new Date(`${endDate}T12:00:00`)
     if (Number.isNaN(from.getTime()) || Number.isNaN(until.getTime()) || from > until) return 0
     return (until.getFullYear() - from.getFullYear()) * 12 + until.getMonth() - from.getMonth() + 1
   })()
+  const annualSessions = sessionMode === 'calendar' ? calendarSessions : manualSessions
+  const activeMonths = sessionMode === 'calendar' ? calendarActiveMonths : manualActiveMonths
   const vendorTotal = model === 'child_month'
     ? price * students * activeMonths
     : model === 'session'
@@ -301,14 +306,17 @@ function ExtracurricularCalculator() {
         </section>
 
         <section className="panel form-section">
-          <div className="section-number">03</div><div className="section-copy"><h2>Kalender kegiatan</h2><p>Pilih periode dan hari kegiatan. Hari libur dari Academic Calendar otomatis dikeluarkan.</p></div>
-          <div className="form-grid">
-            <label><span>Mulai program</span><input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} /></label>
-            <label><span>Selesai program</span><input type="date" value={endDate} min={startDate} onChange={e => setEndDate(e.target.value)} /></label>
-          </div>
-          <div className="activity-days"><span>Hari pelaksanaan</span><div>{[['Min',0],['Sen',1],['Sel',2],['Rab',3],['Kam',4],['Jum',5],['Sab',6]].map(([label,value]) => <button key={value} className={selectedDays.includes(value as number) ? 'active' : ''} onClick={() => setSelectedDays(current => current.includes(value as number) ? current.filter(day => day !== value) : [...current, value as number])}>{label}</button>)}</div><small>Pilih lebih dari satu bila kegiatan berjalan beberapa kali seminggu.</small></div>
-          <div className="session-formula detailed"><span><CalendarDays size={17}/> Possible effective sessions</span><strong>{annualSessions} sesi</strong><small>{extracurricularDates.possible.length} tanggal terjadwal − {extracurricularDates.blocked.length} tanggal libur = {annualSessions} sesi efektif</small></div>
-          {extracurricularDates.blocked.length > 0 && <div className="holiday-impact"><div className="impact-title"><span>Impact hari libur</span><b>−{extracurricularDates.blocked.length} sesi</b></div>{extracurricularDates.blocked.map(({date,event}) => <div className="impact-row" key={date}><span>{new Intl.DateTimeFormat('id-ID',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).format(new Date(`${date}T12:00:00`))}</span><strong>{event?.name}</strong><em>{event?.type === 'collective' ? 'Cuti bersama' : event?.type === 'school' ? 'Libur sekolah' : 'Libur nasional'}</em></div>)}</div>}
+          <div className="section-number">03</div><div className="section-copy"><h2>Total sesi kegiatan</h2><p>Hitung dari kalender akademik atau masukkan jumlah final secara manual.</p></div>
+          <div className="session-mode"><button className={sessionMode === 'calendar' ? 'active' : ''} onClick={() => setSessionMode('calendar')}><CalendarDays size={15}/><span>Gunakan calendar<small>Hitung berdasarkan tanggal & libur</small></span></button><button className={sessionMode === 'manual' ? 'active' : ''} onClick={() => setSessionMode('manual')}><ListChecks size={15}/><span>Input manual<small>Tulis sendiri total sesi</small></span></button></div>
+          {sessionMode === 'calendar' ? <>
+            <div className="form-grid">
+              <label><span>Mulai program</span><input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} /></label>
+              <label><span>Selesai program</span><input type="date" value={endDate} min={startDate} onChange={e => setEndDate(e.target.value)} /></label>
+            </div>
+            <div className="activity-days"><span>Hari pelaksanaan</span><div>{[['Min',0],['Sen',1],['Sel',2],['Rab',3],['Kam',4],['Jum',5],['Sab',6]].map(([label,value]) => <button key={value} className={selectedDays.includes(value as number) ? 'active' : ''} onClick={() => setSelectedDays(current => current.includes(value as number) ? current.filter(day => day !== value) : [...current, value as number])}>{label}</button>)}</div><small>Pilih lebih dari satu bila kegiatan berjalan beberapa kali seminggu.</small></div>
+            <div className="session-formula detailed"><span><CalendarDays size={17}/> Possible effective sessions</span><strong>{annualSessions} sesi</strong><small>{extracurricularDates.possible.length} tanggal terjadwal − {extracurricularDates.blocked.length} tanggal libur = {annualSessions} sesi efektif</small></div>
+            {extracurricularDates.blocked.length > 0 && <div className="holiday-impact"><div className="impact-title"><span>Impact hari libur</span><b>−{extracurricularDates.blocked.length} sesi</b></div>{extracurricularDates.blocked.map(({date,event}) => <div className="impact-row" key={date}><span>{new Intl.DateTimeFormat('id-ID',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).format(new Date(`${date}T12:00:00`))}</span><strong>{event?.name}</strong><em>{event?.type === 'collective' ? 'Cuti bersama' : event?.type === 'school' ? 'Libur sekolah' : 'Libur nasional'}</em></div>)}</div>}
+          </> : <div className="manual-session-box"><div className="manual-session-icon"><ListChecks size={21}/></div><div><label>Total sesi final</label><p>Jumlah ini langsung digunakan dalam seluruh perhitungan biaya.</p></div><div className="session-number-input"><input type="number" min="0" value={manualSessions} onChange={number(setManualSessions)}/><span>sesi</span></div><label className="manual-months"><span>Bulan aktif</span><input type="number" min="1" max="12" value={manualActiveMonths} onChange={number(setManualActiveMonths)}/><small>Digunakan jika skema vendor per anak per bulan</small></label></div>}
         </section>
 
         <section className="panel form-section margin-section">

@@ -80,6 +80,22 @@ h1, h2 { font-family: 'Manrope', sans-serif; margin: 0; }
 .pricing-options button.selected { border-color: #168f82; background: #e2f5f1; box-shadow: inset 0 0 0 1px #168f82; }
 .activity-days button.active { background: #168f82; border-color: #168f82; }
 .session-formula { background: #ecf8f5; border-color: #d4eee8; }
+.session-mode { grid-column: 1/-1; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 20px; padding: 4px; background: #eef1ee; border-radius: 11px; }
+.session-mode button { display: flex; align-items: center; justify-content: center; gap: 9px; min-height: 52px; border: 0; border-radius: 8px; color: #7b827d; background: transparent; text-align: left; }
+.session-mode button.active { color: #176f65; background: white; box-shadow: 0 2px 7px rgba(24,72,64,.1); }
+.session-mode button > span, .session-mode button small { display: block; }
+.session-mode button > span { font-size: 10px; font-weight: 700; }
+.session-mode button small { color: #9ba09b; margin-top: 2px; font-size: 8px; font-weight: 400; }
+.manual-session-box { grid-column: 1/-1; display: grid; grid-template-columns: 42px 1fr auto; gap: 12px; align-items: center; margin-top: 14px; padding: 17px; border: 1px solid #d4eee8; border-radius: 11px; background: #f4fbf9; }
+.manual-session-icon { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 10px; color: #168f82; background: #d8f3ee; }
+.manual-session-box label { color: #3f4c47; font-size: 10px; font-weight: 700; }
+.manual-session-box p { color: #929a95; margin: 4px 0 0; font-size: 9px; }
+.session-number-input { display: flex; align-items: center; overflow: hidden; border: 1px solid #acd9d1; border-radius: 9px; background: white; }
+.session-number-input input { width: 82px; height: 42px; border: 0; outline: 0; padding: 0 8px; color: #176f65; background: transparent; text-align: right; font: 700 18px 'Manrope'; }
+.session-number-input span { padding-right: 11px; color: #6f7d77; font-size: 9px; }
+.manual-months { grid-column: 2/-1; display: grid!important; grid-template-columns: 1fr 70px; align-items: center; gap: 7px; padding-top: 13px; border-top: 1px solid #dcece8; }
+.manual-months input { grid-column: 2; grid-row: 1/3; width: 70px; height: 35px; border: 1px solid #cbded9; border-radius: 7px; outline: 0; text-align: center; }
+.manual-months small { display: block; color: #9ba29d; font-size: 8px; font-weight: 400; }
 .result-main > div { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .result-main > div em { color: #173f3a; background: #55d5c5; border-radius: 12px; padding: 4px 7px; font-size: 8px; font-style: normal; font-weight: 800; letter-spacing: .7px; }
 .result-total { border-top: 4px solid #8ce2d7; }
